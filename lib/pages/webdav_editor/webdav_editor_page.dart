@@ -106,6 +106,7 @@ class _WebDavEditorPageState extends State<WebDavEditorPage> {
           KazumiDialog.showToast(message: '配置成功, 开始测试');
           try {
             await webDav.ping();
+            await setting.put(SettingBoxKey.webDavEnable, true);
             KazumiDialog.showToast(message: '测试成功');
           } catch (e) {
             KazumiDialog.showToast(message: '测试失败 ${e.toString()}');

@@ -81,8 +81,17 @@ class WebDav {
     } catch (_) {
       KazumiLogger().w('WebDav: former backup file not exist');
     }
-    await client.rename(
-        '$webDavPath.cache', webDavPath, true);
+    try {
+      await client.rename(
+          '$webDavPath.cache', webDavPath, true);
+    } catch (e) {
+      KazumiLogger().w('WebDav: rename failed, falling back to direct upload', error: e);
+      await client.writeFromFile(tempFilePath,
+          webDavPath, onProgress: (c, t) {});
+      try {
+        await client.remove('$webDavPath.cache');
+      } catch (_) {}
+    }
     try {
       await File(tempFilePath).delete();
     } catch (_) {}

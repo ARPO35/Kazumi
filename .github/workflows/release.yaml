@@ -64,7 +64,6 @@
       flutter-build-windows:
         name: "Release for windows"
         runs-on: "windows-latest"
-        needs: [flutter-build-android, flutter-build-ios, flutter-build-linux, flutter-build-macos] 
         permissions: write-all
     
         steps:
@@ -164,7 +163,8 @@
 
       flutter-build-linux:
         name: "Release for Linux"
-        runs-on: "ubuntu-latest" 
+        runs-on: "ubuntu-latest"
+        continue-on-error: true
         permissions: write-all
         steps:
           - name: Clone repository
@@ -267,6 +267,7 @@
       flutter-build-ios:
         name: "Release for iOS"
         runs-on: "macos-latest"
+        continue-on-error: true
         permissions: write-all
 
         steps:
@@ -304,6 +305,7 @@
       flutter-build-macos:
         name: "Release for Macos"
         runs-on: "macos-latest"
+        continue-on-error: true
         permissions: write-all
 
         steps:
@@ -340,7 +342,7 @@
       release:
         name: "Release"
         runs-on: "ubuntu-latest"
-        needs: [flutter-build-windows] 
+        needs: [flutter-build-android, flutter-build-windows] 
         permissions: write-all
         steps:
           - name: Clone repository
@@ -393,33 +395,42 @@
               cp android_outputs/* build/unsigned/Kazumi_android_${{ env.tag }}.apk
 
           - name: Download iOS build file
+            continue-on-error: true
             uses: actions/download-artifact@v4
             with:
               name: ios_outputs
               path: ios_outputs  
           - name: List files in ios_outputs directory
+            continue-on-error: true
             run: ls -l ios_outputs   
           - name: Copy ios build file to root
+            continue-on-error: true
             run: cp ios_outputs/* Kazumi_ios_${{ env.tag }}_no_sign.ipa
 
           - name: Download macos build file
+            continue-on-error: true
             uses: actions/download-artifact@v4
             with:
               name: macos_outputs
               path: macos_outputs  
           - name: List files in macos_outputs directory
+            continue-on-error: true
             run: ls -l macos_outputs   
           - name: Copy macos build file to root
+            continue-on-error: true
             run: cp macos_outputs/* Kazumi_macos_${{ env.tag }}.dmg   
             
           - name: Download linux build file
+            continue-on-error: true
             uses: actions/download-artifact@v4
             with:
               name: linux_outputs
               path: linux_outputs  
           - name: List files in linux_outputs directory
+            continue-on-error: true
             run: ls -l linux_outputs   
           - name: Copy linux build file to root
+            continue-on-error: true
             run: cp linux_outputs/* .
 
           - name: Sign APK
@@ -439,6 +450,7 @@
           - name: Create release
             uses: softprops/action-gh-release@v2
             with:
+              fail_on_unmatched_files: false
               files: |
                 build/signed/*.apk
                 Kazumi_windows_*.zip

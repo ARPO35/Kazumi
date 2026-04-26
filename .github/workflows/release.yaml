@@ -21,7 +21,11 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - name: Extract tag name
-            run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            run: |
+              tag=${GITHUB_REF#refs/tags/}
+              tag=${tag#refs/heads/}
+              tag=${tag//\//-}
+              echo "tag=${tag}" >> $GITHUB_ENV
             shell: bash
           - name: Echo build progress
             run: echo "Kazumi_android_${{ env.tag }}.apk build progress"
@@ -70,8 +74,8 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - run: |
-                  $tag = "${{ github.ref }}".Replace('refs/tags/', '')
-                  echo "tag=$(echo $tag)" >> $env:GITHUB_ENV
+                  $tag = "${{ github.ref }}" -replace '^refs/(tags|heads)/', '' -replace '/', '-'
+                  echo "tag=$tag" >> $env:GITHUB_ENV
           - run: echo "Kazumi_windows_${env:tag}.zip build progress"
           - run: choco install yq
           - name: Enable Git longpaths
@@ -170,7 +174,11 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - name: Extract tag name
-            run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            run: |
+              tag=${GITHUB_REF#refs/tags/}
+              tag=${tag#refs/heads/}
+              tag=${tag//\//-}
+              echo "tag=${tag}" >> $GITHUB_ENV
             shell: bash
           - name: Echo build progress
             run: echo "Kazumi_linux_${{ env.tag }}.tar.gz build progress"
@@ -274,7 +282,11 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - name: Extract tag name
-            run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            run: |
+              tag=${GITHUB_REF#refs/tags/}
+              tag=${tag#refs/heads/}
+              tag=${tag//\//-}
+              echo "tag=${tag}" >> $GITHUB_ENV
           - name: Echo build progress
             run: echo "Kazumi_ios_${{ env.tag }}.ipa build progress"
           - name: Set up Flutter
@@ -312,7 +324,11 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - name: Extract tag name
-            run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            run: |
+              tag=${GITHUB_REF#refs/tags/}
+              tag=${tag#refs/heads/}
+              tag=${tag//\//-}
+              echo "tag=${tag}" >> $GITHUB_ENV
           - name: Echo build progress
             run: echo "Kazumi_macos_${{ env.tag }}.dmg build progress"
           - name: Set up Flutter
@@ -348,7 +364,11 @@
           - name: Clone repository
             uses: actions/checkout@v4
           - name: Extract tag name
-            run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            run: |
+              tag=${GITHUB_REF#refs/tags/}
+              tag=${tag#refs/heads/}
+              tag=${tag//\//-}
+              echo "tag=${tag}" >> $GITHUB_ENV
             shell: bash
           - name: Set up JDK 17
             uses: actions/setup-java@v4

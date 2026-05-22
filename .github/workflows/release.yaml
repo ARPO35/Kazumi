@@ -232,6 +232,10 @@
               tag=${GITHUB_REF#refs/tags/}
               tag=${tag#refs/heads/}
               tag=${tag//\//-}
+              # Deb package requires Version to start with a digit
+              if ! [[ "$tag" =~ ^[0-9] ]]; then
+                tag="0.0.0+dev.$(date +%Y%m%d).${GITHUB_SHA:0:7}"
+              fi
               echo "tag=${tag}" >> $GITHUB_ENV
             shell: bash
           - name: Echo build progress

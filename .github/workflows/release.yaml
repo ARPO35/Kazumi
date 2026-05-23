@@ -339,8 +339,9 @@
               if [[ "${VERSION}" == v* ]]; then
                 VERSION="${VERSION#v}"
               fi
-              # RPM 版本号不允许包含 '+' 等特殊字符, 替换为 '_'
-              VERSION="${VERSION//+/-}"
+              # RPM/DEB 版本号不允许包含 '+' 等特殊字符, 替换为 '.'
+              # '-' 在 RPM 中用于分隔 Version-Release, 在 DEB 中用于分隔 debian revision, 故不能使用
+              VERSION="${VERSION//+/.}"
               RPM_BUILD_DIR=$(mktemp -d)
               RPM_NAME="Kazumi_linux_${{ env.tag }}"
               mkdir -p ${RPM_BUILD_DIR}/{BUILD,RPMS,SOURCES,SPECS,SRPMS}

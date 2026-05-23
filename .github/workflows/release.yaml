@@ -257,7 +257,7 @@
                   libxkbcommon-dev libxrandr-dev libxss-dev libxv-dev libxvidcore-dev \
                   linux-libc-dev nasm ninja-build pkg-config python3 python3-docutils wayland-protocols \
                   x11proto-core-dev zlib1g-dev libfdk-aac-dev libtheora-dev libwebp-dev \
-                  unixodbc-dev libpq-dev libxxhash-dev libaom-dev              
+                  unixodbc-dev libpq-dev libxxhash-dev libaom-dev rpm-build
             shell: bash
           - name: Set up Flutter
             uses: subosito/flutter-action@v2.16.0
@@ -320,6 +320,27 @@
 
               cd ..
               dpkg-deb --build --root-owner-group Kazumi_linux_${{ env.tag }}_amd64
+
+              # RPM 包
+              # 版本号从 tag 中提取; 如果以 'v' 开头, 则去除前导 'v' (RPM 版本号必须以数字开头)
+              VERSION="${{ env.tag }}"
+              if [[ "${VERSION}" == v* ]]; then
+                VERSION="${VERSION#v}"
+              fi
+              # RPM 版本号不允许包含 '+' 等特殊字符, 替换为 '_'
+              VERSION="${VERSION//+/-}"
+              RPM_BUILD_DIR=$(mktemp -d)
+              RPM_NAME="Kazumi_linux_${{ env.tag }}"
+              mkdir -p ${RPM_BUILD_DIR}/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/opt/Kazumi
+              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/applications
+              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/icons/hicolor/512x512/apps
+              cp -r build/linux/x64/release/bundle/* ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/opt/Kazumi/
+              cp assets/linux/io.github.Predidit.Kazumi.desktop ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/applications/
+              cp assets/images/logo/logo_linux.png ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/icons/hicolor/512x512/apps/io.github.Predidit.Kazumi.png
+              cp assets/linux/rpm/kazumi.spec ${RPM_BUILD_DIR}/SPECS/
+              rpmbuild --define "_topdir ${RPM_BUILD_DIR}" --define "version ${VERSION}" -bb ${RPM_BUILD_DIR}/SPECS/kazumi.spec
+              cp ${RPM_BUILD_DIR}/RPMS/x86_64/*.rpm ${RPM_NAME}.x86_64.rpm
             shell: bash
 
           - name: Upload linux outputs
@@ -329,6 +350,7 @@
               path: |
                 Kazumi_linux_*.tar.gz
                 Kazumi_linux_*.deb
+                Kazumi_linux_*.rpm
 
       flutter-build-ios:
         name: "Release for iOS"
@@ -528,3 +550,4 @@
                 Kazumi_ios_*.ipa
                 Kazumi_linux_*.tar.gz
                 Kazumi_linux_*.deb
+                Kazumi_linux_*.rpm

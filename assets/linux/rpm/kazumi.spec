@@ -17,20 +17,21 @@ Requires:       webkit2gtk4.1
 Kazumi 是一款使用 Flutter 开发的动漫观看软件, 支持在线观看与弹幕功能。
 
 %install
-# 此文件由外部脚本负责将文件复制到 BUILDROOT, 因此 %install 阶段不做任何操作。
-:
+# rpmbuild 会在执行 %install 前清空 BUILDROOT, 因此必须在此阶段安装文件。
+rm -rf %{buildroot}
+mkdir -p %{buildroot}/opt/Kazumi
+mkdir -p %{buildroot}/usr/bin
+mkdir -p %{buildroot}/usr/share/applications
+mkdir -p %{buildroot}/usr/share/icons/hicolor/512x512/apps
 
-%post
-# 安装后创建软链接并赋予执行权限
-ln -sf /opt/Kazumi/kazumi /usr/bin/kazumi
-chmod +x /usr/bin/kazumi
-
-%postun
-# 卸载后清理软链接
-rm -f /usr/bin/kazumi
+cp -a %{_sourcedir}/bundle/. %{buildroot}/opt/Kazumi/
+install -Dm0644 %{_sourcedir}/io.github.Predidit.Kazumi.desktop %{buildroot}/usr/share/applications/io.github.Predidit.Kazumi.desktop
+install -Dm0644 %{_sourcedir}/io.github.Predidit.Kazumi.png %{buildroot}/usr/share/icons/hicolor/512x512/apps/io.github.Predidit.Kazumi.png
+ln -sf ../../opt/Kazumi/kazumi %{buildroot}/usr/bin/kazumi
 
 %files
-/opt/Kazumi
+%dir /opt/Kazumi
 /opt/Kazumi/*
+/usr/bin/kazumi
 /usr/share/applications/io.github.Predidit.Kazumi.desktop
 /usr/share/icons/hicolor/512x512/apps/io.github.Predidit.Kazumi.png

@@ -345,12 +345,9 @@
               RPM_BUILD_DIR=$(mktemp -d)
               RPM_NAME="Kazumi_linux_${{ env.tag }}"
               mkdir -p ${RPM_BUILD_DIR}/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/opt/Kazumi
-              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/applications
-              mkdir -p ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/icons/hicolor/512x512/apps
-              cp -r build/linux/x64/release/bundle/* ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/opt/Kazumi/
-              cp assets/linux/io.github.Predidit.Kazumi.desktop ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/applications/
-              cp assets/images/logo/logo_linux.png ${RPM_BUILD_DIR}/BUILDROOT/kazumi-${VERSION}-1.x86_64/usr/share/icons/hicolor/512x512/apps/io.github.Predidit.Kazumi.png
+              cp -a build/linux/x64/release/bundle ${RPM_BUILD_DIR}/SOURCES/bundle
+              cp assets/linux/io.github.Predidit.Kazumi.desktop ${RPM_BUILD_DIR}/SOURCES/
+              cp assets/images/logo/logo_linux.png ${RPM_BUILD_DIR}/SOURCES/io.github.Predidit.Kazumi.png
               cp assets/linux/rpm/kazumi.spec ${RPM_BUILD_DIR}/SPECS/
               rpmbuild --define "_topdir ${RPM_BUILD_DIR}" --define "version ${VERSION}" -bb ${RPM_BUILD_DIR}/SPECS/kazumi.spec
               cp ${RPM_BUILD_DIR}/RPMS/x86_64/*.rpm ${RPM_NAME}.x86_64.rpm

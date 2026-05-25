@@ -156,6 +156,7 @@ static void my_application_startup(GApplication* application) {
   //MyApplication* self = MY_APPLICATION(object);
 
   // Perform any actions required at application startup.
+  g_set_prgname("kazumi");
 
   G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
 }

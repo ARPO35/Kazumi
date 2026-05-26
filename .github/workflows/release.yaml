@@ -284,7 +284,7 @@
               sed -i "s/kvpx7qkqjh/${{ secrets.DANDANAPI_APPID }}/g" lib/utils/mortis.dart
               sed -i "s/rABUaBLqdz7aCSi3fe88ZDj2gwga9Vax/${{ secrets.DANDANAPI_KEY }}/g" lib/utils/mortis.dart
           - name: Build Flutter for Linux
-            run: flutter build linux
+            run: flutter build linux --enable-impeller
             shell: bash
           # - name: Download FFmpeg Assets
           #   uses: dsaltares/fetch-gh-release-asset@master

@@ -10,8 +10,8 @@ URL:            https://github.com/Predidit/Kazumi
 
 # 禁用源代码打包, 因为二进制已经由 Flutter 构建流程生成
 AutoReqProv:    no
-Requires:       libayatana-appindicator
-Requires:       webkit2gtk4.1
+Requires:       libayatana-appindicator3.so.1()(64bit)
+Requires:       libwebkit2gtk-4.1.so.0()(64bit)
 
 %description
 Kazumi 是一款使用 Flutter 开发的动漫观看软件, 支持在线观看与弹幕功能。
